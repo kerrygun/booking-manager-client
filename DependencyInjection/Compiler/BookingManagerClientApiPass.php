@@ -1,11 +1,11 @@
 <?php
 /**
- * InvoiceApiInterface
+ * BookingManagerClientApiPass
  *
  * PHP version 8.1.1
  *
  * @category Class
- * @package  OpenAPI\Server
+ * @package  OpenAPI\Server\DependencyInjection\Compiler
  * @author   OpenAPI Generator team
  * @link     https://github.com/openapitools/openapi-generator
  */
@@ -27,44 +27,44 @@
  * Do not edit the class manually.
  */
 
-namespace OpenAPI\Server\booking-manager-client;
+namespace OpenAPI\Server\DependencyInjection\Compiler;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use OpenAPI\Server\Model\Invoice;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * InvoiceApiInterface Interface Doc Comment
+ * BookingManagerClientApiPass Class Doc Comment
  *
- * @category Interface
- * @package  OpenAPI\Server\booking-manager-client
+ * @category Class
+ * @package  OpenAPI\Server\DependencyInjection\Compiler
  * @author   OpenAPI Generator team
  * @link     https://github.com/openapitools/openapi-generator
  */
-interface InvoiceApiInterface
+class BookingManagerClientApiPass implements CompilerPassInterface
 {
 
     /**
-     * Sets authentication method bearerAuth
+     * You can modify the container here before it is dumped to PHP code.
      *
-     * @param string|null $value Value of the bearerAuth authentication method.
-     *
-     * @return void
+     * @param ContainerBuilder $container
      */
-    public function setbearerAuth(?string $value): void;
+    public function process(ContainerBuilder $container) {
+        // always first check if the primary service is defined
+        if (!$container->has('open_api_server.api.api_server')) {
+            return;
+        }
 
-    /**
-     * Operation getInvoices
-     *
-     * exports all issued invoices or only certain type issued in requested period
-     *
-     * @param  int $invoiceType  &#x60;0&#x60; - all &#x60;1&#x60; - final &#x60;2&#x60; - advance &#x60;3&#x60; - storno (required)
-     * @param  \DateTime $dateFrom  date format&amp;#58; yyyy-MM-ddTHH:mm:ss (required)
-     * @param  \DateTime $dateTo  date format&amp;#58; yyyy-MM-ddTHH:mm:ss (required)
-     * @param  int     &$responseCode    The HTTP Response Code
-     * @param  array   $responseHeaders  Additional HTTP headers to return with the response ()
-     *
-     * @return array|object|null
-     */
-    public function getInvoices(int $invoiceType, \DateTime $dateFrom, \DateTime $dateTo, int &$responseCode, array &$responseHeaders): array|object|null;
+        $definition = $container->findDefinition('open_api_server.api.api_server');
 
+        // find all service IDs with the open_api_server.api tag
+        $taggedServices = $container->findTaggedServiceIds('open_api_server.api');
+
+        foreach ($taggedServices as $id => $tags) {
+            foreach ($tags as $tag) {
+                // add the transport service to the ChainTransport service
+                $definition->addMethodCall('addApiHandler', [$tag['api'], new Reference($id)]);
+            }
+        }
+    }
 }

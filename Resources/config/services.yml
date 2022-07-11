@@ -8,7 +8,7 @@ parameters:
 
 services:
     open_api_server.api.api_server:
-        class: OpenAPI\Server\booking-manager-client\ApiServer
+        class: OpenAPI\Server\BookingManagerClient\ApiServer
 
     open_api_server.model.model_serializer:
         class: OpenAPI\Server\Model\ModelSerializer

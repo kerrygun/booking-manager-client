@@ -1,11 +1,11 @@
 <?php
 /**
- * ApiServer
+ * BookingManagerClientExtension
  *
  * PHP version 8.1.1
  *
  * @category Class
- * @package  OpenAPI\Server\booking-manager-client
+ * @package  OpenAPI\Server\DependencyInjection
  * @author   OpenAPI Generator team
  * @link     https://github.com/openapitools/openapi-generator
  */
@@ -27,56 +27,31 @@
  * Do not edit the class manually.
  */
 
-namespace OpenAPI\Server\booking-manager-client;
+namespace OpenAPI\Server\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 /**
- * ApiServer Class Doc Comment
- *
- * PHP version 8.1.1
+ * BookingManagerClientExtension Class Doc Comment
  *
  * @category Class
- * @package  OpenAPI\Server\booking-manager-client
+ * @package  OpenAPI\Server\DependencyInjection
  * @author   OpenAPI Generator team
  * @link     https://github.com/openapitools/openapi-generator
  */
-class ApiServer
+class BookingManagerClientExtension extends Extension
 {
-
-    /**
-     * @var array
-     */
-    private array $apis = array();
-
-    /**
-     * Adds an API handler to the server.
-     *
-     * @param string $api An API name of the handle
-     * @param mixed $handler A handler to set for the given API
-     */
-    public function addApiHandler(string $api, $handler): void
+    public function load(array $configs, ContainerBuilder $container): void
     {
-        if (isset($this->apis[$api])) {
-            throw new \InvalidArgumentException('API has already a handler: '.$api);
-        }
-
-        $this->apis[$api] = $handler;
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.yml');
     }
 
-    /**
-     * Returns an API handler.
-     *
-     * @param string $api An API name of the handle
-     * @return mixed Returns a handler
-     * @throws \InvalidArgumentException When no such handler exists
-     */
-    public function getApiHandler(string $api)
+    public function getAlias(): string
     {
-        if (!isset($this->apis[$api])) {
-            throw new \InvalidArgumentException('No handler for '.$api.' implemented.');
-        }
-
-        return $this->apis[$api];
+        return 'open_api_server';
     }
 }

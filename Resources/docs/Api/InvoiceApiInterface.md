@@ -1,4 +1,4 @@
-# OpenAPI\Server\booking-manager-client\InvoiceApiInterface
+# OpenAPI\Server\BookingManagerClient\InvoiceApiInterface
 
 All URIs are relative to *https://www.booking-manager.com/api/v2*
 
@@ -32,7 +32,7 @@ All invoices issued by the company inside Booking Manager can be retrieved this 
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\InvoiceApiInterface;
+use OpenAPI\Server\BookingManagerClient\InvoiceApiInterface;
 
 class InvoiceApi implements InvoiceApiInterface
 {

@@ -29,7 +29,7 @@
 
 namespace OpenAPI\Server\Controller;
 
-use OpenAPI\Server\booking-manager-client\ApiServer;
+use OpenAPI\Server\BookingManagerClient\ApiServer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

@@ -35,7 +35,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\Constraints as Assert;
-use OpenAPI\Server\booking-manager-client\InvoiceApiInterface;
+use OpenAPI\Server\BookingManagerClient\InvoiceApiInterface;
 use OpenAPI\Server\Model\Invoice;
 
 /**

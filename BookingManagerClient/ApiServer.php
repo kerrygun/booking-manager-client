@@ -1,11 +1,11 @@
 <?php
 /**
- * booking-manager-clientBundle
+ * ApiServer
  *
  * PHP version 8.1.1
  *
  * @category Class
- * @package  OpenAPI\Server
+ * @package  OpenAPI\Server\BookingManagerClient
  * @author   OpenAPI Generator team
  * @link     https://github.com/openapitools/openapi-generator
  */
@@ -27,24 +27,56 @@
  * Do not edit the class manually.
  */
 
-namespace OpenAPI\Server;
+namespace OpenAPI\Server\BookingManagerClient;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use OpenAPI\Server\DependencyInjection\Compiler\booking-manager-clientApiPass;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * booking-manager-clientBundle Class Doc Comment
+ * ApiServer Class Doc Comment
+ *
+ * PHP version 8.1.1
  *
  * @category Class
- * @package  OpenAPI\Server
+ * @package  OpenAPI\Server\BookingManagerClient
  * @author   OpenAPI Generator team
  * @link     https://github.com/openapitools/openapi-generator
  */
-class booking-manager-clientBundle extends Bundle
+class ApiServer
 {
-    public function build(ContainerBuilder $container)
+
+    /**
+     * @var array
+     */
+    private array $apis = array();
+
+    /**
+     * Adds an API handler to the server.
+     *
+     * @param string $api An API name of the handle
+     * @param mixed $handler A handler to set for the given API
+     */
+    public function addApiHandler(string $api, $handler): void
     {
-        $container->addCompilerPass(new booking-manager-clientApiPass());
+        if (isset($this->apis[$api])) {
+            throw new \InvalidArgumentException('API has already a handler: '.$api);
+        }
+
+        $this->apis[$api] = $handler;
+    }
+
+    /**
+     * Returns an API handler.
+     *
+     * @param string $api An API name of the handle
+     * @return mixed Returns a handler
+     * @throws \InvalidArgumentException When no such handler exists
+     */
+    public function getApiHandler(string $api)
+    {
+        if (!isset($this->apis[$api])) {
+            throw new \InvalidArgumentException('No handler for '.$api.' implemented.');
+        }
+
+        return $this->apis[$api];
     }
 }

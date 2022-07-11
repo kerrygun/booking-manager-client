@@ -27,7 +27,7 @@
  * Do not edit the class manually.
  */
 
-namespace OpenAPI\Server\booking-manager-client;
+namespace OpenAPI\Server\BookingManagerClient;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use OpenAPI\Server\Model\AvailabilityResponse;
@@ -53,7 +53,7 @@ use OpenAPI\Server\Model\Yacht;
  * BookingApiInterface Interface Doc Comment
  *
  * @category Interface
- * @package  OpenAPI\Server\booking-manager-client
+ * @package  OpenAPI\Server\BookingManagerClient
  * @author   OpenAPI Generator team
  * @link     https://github.com/openapitools/openapi-generator
  */

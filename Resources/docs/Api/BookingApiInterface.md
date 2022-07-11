@@ -1,4 +1,4 @@
-# OpenAPI\Server\booking-manager-client\BookingApiInterface
+# OpenAPI\Server\BookingManagerClient\BookingApiInterface
 
 All URIs are relative to *https://www.booking-manager.com/api/v2*
 
@@ -58,7 +58,7 @@ Calling *_/addDocument* is used to place a document on specific item in Booking 
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -115,7 +115,7 @@ Calling *_/reservation* cancels a option. An already confirmed booking is not po
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -169,7 +169,7 @@ Calling *_/reservation* converts an option into finalized reservation
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -223,7 +223,7 @@ Calling *_/reservation* is used to place a new option in the Booking Manager sys
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -277,7 +277,7 @@ Calling *_/availability/{id}* returns availability for specific year
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -332,7 +332,7 @@ Calling *_/base/{id}* with specific id returns only one base with that id
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -386,7 +386,7 @@ Calling *_/bases* retrieves a list of bases that are assigned for each boat. Bas
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -437,7 +437,7 @@ Calling *_/companies* retrieves a list of companies
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -488,7 +488,7 @@ Calling *_/company/{id}* with specific id returns only one company with requeste
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -542,7 +542,7 @@ Retrieves a list of all *ISO-3166* countries and their short, long codes and wor
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -593,7 +593,7 @@ Rretrieves only one country by id
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -647,7 +647,7 @@ Calling *_/equipment* retrieves a list of equipment categories. Each boat can ha
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -698,7 +698,7 @@ Returns a list of all available yachts according to selected parameters such as 
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -772,7 +772,7 @@ Calling *_/prices* retrieves a list of yacht price on requested date interval
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -833,7 +833,7 @@ Calling *_/reservation* is used to get specific reservation.
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -887,7 +887,7 @@ Calling *_/reservations* retrieves a list of all reservations
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -942,7 +942,7 @@ Returns only one sailing area with the matching id
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -996,7 +996,7 @@ Retrieves a full list of sailing areas. Sailing area is a more local geographica
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -1047,7 +1047,7 @@ Calling *_/shipyard/{id}* with specific id returns only one shipyard with that i
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -1101,7 +1101,7 @@ Calling *_/shipyards* retrieves a list of shipyards of the boats.
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -1152,7 +1152,7 @@ Calling *_/shortAvailability/{id}* return availability for specific year. Differ
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -1209,7 +1209,7 @@ Calling *_/specialOffers* retrieves a list of special offers (one way or short t
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -1281,7 +1281,7 @@ Calling *_/specialOffers* retrieves a list of special offers (one way or short t
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -1355,7 +1355,7 @@ Returns only one worldRegion matching the Id
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -1409,7 +1409,7 @@ Retrieves a list of world regions. World Regions are used to group countries in 
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -1460,7 +1460,7 @@ Calling *_/yachts* retrieves a list of yachts, with all the detailed information
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
@@ -1514,7 +1514,7 @@ Calling *_/yacht/{id}* with specific id returns only one yacht with that id and 
 
 namespace Acme\MyBundle\Api;
 
-use OpenAPI\Server\booking-manager-client\BookingApiInterface;
+use OpenAPI\Server\BookingManagerClient\BookingApiInterface;
 
 class BookingApi implements BookingApiInterface
 {
