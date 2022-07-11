@@ -5,7 +5,7 @@ docker run --rm -v %cd%:/local openapitools/openapi-generator-cli generate ^
     --git-host=github.com ^
     --git-user-id=kerrygun ^
     --git-repo-id=booking-manager-client ^
-    --additional-properties=apiPackage=booking-manager-client ^
+    --additional-properties=apiPackage=BookingManagerClient ^
     --additional-properties=artifactVersion=2.0.2 ^
-    --additional-properties=bundleName=booking-manager-client ^
+    --additional-properties=bundleName=BookingManagerClient ^
     --additional-properties=packageName=BookingManagerClient ^
