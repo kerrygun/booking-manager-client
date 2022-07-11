@@ -1,0 +1,1910 @@
+openapi: 3.0.0
+
+servers:
+  - description: Booking Manager Production
+    url: https://www.booking-manager.com/api/v2
+  - description: Booking Manager Beta
+    url:  http://beta.booking-manager.com/api/v2
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/mmksystems/bm-api/2.0.0
+info:
+  description: |-
+    # Booking Manager API for Agencies and Charter Fleets
+    
+    Booking Manager API is a standard Web service that enables clients to connect their data with external systems and services and to extend the automation benefits of the Booking Manager System.
+    - It is used by charter agencies to publish availabilities of Charter Operators and automate booking processes by connecting Booking Manager to their own web sites to allow for seamless online booking experience for end users or integrating it with their CRM solutions in order to automate office procedures.
+    - Charter operators use the web service to connect Booking Manager with their book keeping softwares and save time and effort in accounting department.
+    - Third Party Software tools also use Booking Manager API to display richer information, for example boat tracking systems are able to visualise client contact information directly on the map showing the boat location in real time.
+    ## Document Changes
+    ### 29.05.2020
+    - `/companies` more information added in response - address, additional telephone and additional mobile number
+    - `/offers` added `kind` parameter in the request
+    - `/yachts` added `validForBases from/to` parameter to the response
+    ### 10.04.2020  
+    - `/yachts` added `shipyardId` parameter to the response
+    - POST `/addDocument` - function to add document on specific item
+    - `/offers` added `sailingAreaId` as additional parameter in request
+    - PUT `/reservation` added `expirationDate` for options
+        
+    ### 12.03.2020.
+    - Extras valid for certain yacht in `/yachts`
+    - `/yachts` function with extras duration parameter - `validDaysFrom`/`validDaysTo`
+    - `/yachts` function with year of build `year`, default yacht deposit `deposit`, commision percentage `commissionPercentage` and default check in day `defaultCheckInDay`
+    - `/yacht` field `lenghtAtWaterline` corrected to length
+    
+  version: "2.0.2"
+  title: Booking Manager API
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  contact:
+    name: Booking Manager Support
+    url: https://support.booking-manager.com/
+tags:
+  - name: Booking
+    description: Charter companies using the API to manage their own fleet info
+  - name: Invoice
+    description: Invoicing and Payment API
+  - name: Advanced
+    description: "Advanced data manipulation API allows you to access and change detailed information in your Booking Manager "
+
+paths:
+  '/countries':
+    get:
+      summary: Provides a list of countries
+      operationId: getCountries
+      description: |-
+        Retrieves a list of all *ISO-3166* countries and their short, long codes and world region code. Countries from the list present the countries of dedicated bases of the boats. 
+         
+         More about the ISO-3166 standard here https://www.iso.org/iso-3166-country-codes.html  
+      
+      responses:
+        '200':
+          description: returns a list of countries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                 $ref: '#/components/schemas/Country'
+                
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+      tags:
+        - Booking
+  '/country/{id}':
+    get:
+      summary: Gets a specific country
+      operationId: getCountryById
+      description: Rretrieves only one country by id
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: returns a matching country
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+      tags: 
+        - Booking
+  '/worldRegions':
+    get:
+      summary: Provides a list of world regions
+      operationId: getWorldRegions
+      description: Retrieves a list of world regions. World Regions are used to group countries in larger world areas and should not be confused with sailing areas
+      responses:
+        '200':
+          description: returns a list of world regions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorldRegion'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+      tags:
+        - Booking
+  '/worldRegion/{id}':
+    get:
+      summary: Gets a specific world region
+      operationId: getWorldRegionById
+      description: Returns only one worldRegion matching the Id
+      parameters: 
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: returns a matching world region
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorldRegion'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+      tags:
+        - Booking
+  '/sailingAreas':
+    get:
+      summary: Provides a list of sailing areas
+      operationId: getSailingAreas
+      description: Retrieves a full list of sailing areas. Sailing area is a more local geographical unit considered to be a single destination by sailors. This area can be comprised of multiple bases and is not always limited to only one country. 
+      responses:
+        '200':
+          description: returns a list of sailing areas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SailingArea'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+      tags:
+        - Booking
+  '/sailingArea/{id}':
+    get:
+      summary: Gets a specific sailing area
+      operationId: getSailingAreaById
+      description: Returns only one sailing area with the matching id
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: returns a matching sailing area
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SailingArea'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+      tags:
+        - Booking
+  '/bases':
+    get:
+      summary: Provides a list of bases
+      operationId: getBases
+      description: Calling */bases* retrieves a list of bases that are assigned for each boat. Base is the exact location where boat is located. One base can belong to more sailing areas. In that case, multiple dedicated sailing areas are separated by comma. Example of connecting the bases with sailing areas is with - Country Italy - countryId is 380. That base belongs to sailing area - 18. In sailingAreas function, this id belongs to Tyrrhenian Sea. So, you can then connect the Sapri base with Tyrrhenian Sea, and same for all other bases that belong to sailingAreas - 18.
+      responses:
+        '200':
+          description: returns a list of available bases with dedicated base description.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Base'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+      tags:
+        - Booking
+  '/base/{id}':
+    get:
+      summary: Gets a specific base
+      operationId: getBaseById
+      description: Calling */base/{id}* with specific id returns only one base with that id
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: returns a matching base id with all detailed information.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Base"
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+      tags:
+        - Booking
+  '/equipment':
+    get:
+      summary: Provides a list of equipment categories
+      operationId: getEquipment
+      description: Calling */equipment* retrieves a list of equipment categories. Each boat can have multiple equipment items, and equipment items have dedicated equipment categories. Boat can have many equipment items, but not all of them can have dedicated equipment categories. Dedicated equipment categories represent categories that can be used as search option filter on the web page, for more precise search of boats with dedicated equipment. Not every equipment item can have dedicated equipment category. In those cases, equipment item dedicated category is -1.
+      responses:
+        '200':
+          description: returns a list of equipment categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Equipment"
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+      tags:
+        - Booking 
+  '/companies':
+    get:
+      summary: Provides a list of companies
+      operationId: getCompanies
+      description: Calling */companies* retrieves a list of companies
+      responses:
+        '200':
+          description: Retrieves the list of all the Charter operators in the Booking Manager System who manage their resources */yachts* availability in real time. This list provides the id's of the companies that are available for synchronisation and for real time booking. 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Company"
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+      tags:
+        - Booking
+  '/company/{id}':
+    get:
+      summary: Gets a specific company
+      operationId: getCompanyBy
+      description: Calling */company/{id}* with specific id returns only one company with requested id
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: returns a matching company id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Company"
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+      tags:
+        - Booking
+  '/shipyards':
+    get:
+      summary: Provides a list of shipyards
+      operationId: getShipyards
+      description: Calling */shipyards* retrieves a list of shipyards of the boats.
+      responses:
+        '200':
+          description: Returns a list of boat shipyards.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Shipyard"
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+      tags:
+        - Booking
+  '/shipyard/{id}':
+    get:
+      summary: Gets a specific shipyard
+      operationId: getShipyardById
+      description: Calling */shipyard/{id}* with specific id returns only one shipyard with that id
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: returns a matching shipyard id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Shipyard"
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+      tags:
+        - Booking
+  '/yachts':
+    get:
+      summary: Provides a list of yachts
+      operationId: getYachts
+      description: Calling */yachts* retrieves a list of yachts, with all the detailed information and description of the boat. Description contains boat technical specifications, images and dedicated equipment categories. Also, information about applicable extra services for different products (Bareboat, Crewed, Cabin, Flotilla, Regatta and Allinclusive) are visible. One boat can have multiple products assigned (e.g. Bareboat and Crewed) at the same time, therefore each product has it s own elaboration of applicable extras.
+      parameters:
+        - $ref: '#/components/parameters/company'
+      responses:
+        '200':
+          description: Explanation of the response structure <br /><br />
+            First part  of the response contains technical info of the boat  <br /><br />
+            id = unique resource id<br />
+            name = the name of the individual yacht<br />
+            model= name of the model<br />
+            shipyardID= id of the shipyard (boat manufacturer)<br />
+          
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Yacht'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+      tags:
+        - Booking
+  '/yacht/{id}':
+    get:
+      summary: Gets a specific yacht
+      operationId: getYacthById
+      description: Calling */yacht/{id}* with specific id returns only one yacht with that id and all dedicated details.
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: returns a matching yacht id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Yacht'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+      tags:
+        - Booking
+  '/offers':
+    get:
+      summary: Provides a list of available offers
+      operationId: getOffers
+      description: Returns a list of all available yachts according to selected parameters such as -date from, date to, flexibility, product name, currency and trip duration. Flexibility presents timeframe (along with dates) as an additional filiter to retrieve results If you use flexibility 6 (in year), returned available boats will be only the ones that have default check in day Saturday. All other selected flexibility parameters will return all available departures (e.g Friday, Monday etc.)
+      parameters:
+        - $ref: '#/components/parameters/dateFrom'
+        - $ref: '#/components/parameters/dateTo'
+        - $ref: '#/components/parameters/flexibility'
+        - $ref: '#/components/parameters/companyIdArray'
+        - $ref: '#/components/parameters/countryArray'
+        - $ref: '#/components/parameters/product'
+        - $ref: '#/components/parameters/baseFromIdArray'
+        - $ref: '#/components/parameters/baseToIdArray'
+        - $ref: '#/components/parameters/sailingAreaIdArray'
+        - $ref: '#/components/parameters/yachtIdArray'
+        - $ref: '#/components/parameters/modelIdArray'
+        - $ref: '#/components/parameters/currency'
+        - $ref: '#/components/parameters/tripDurationArray'
+        - $ref: '#/components/parameters/minCabins'
+        - $ref: '#/components/parameters/maxCabins'
+        - $ref: '#/components/parameters/minBerths'
+        - $ref: '#/components/parameters/maxBerths'
+        - $ref: '#/components/parameters/minHeads'
+        - $ref: '#/components/parameters/maxHeads'
+        - $ref: '#/components/parameters/minLength'
+        - $ref: '#/components/parameters/maxLength'
+      responses:
+        '200':
+          description: returns a list of yachts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Offer'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+        '422': 
+          $ref: '#/components/responses/422'
+      tags:
+        - Booking
+  '/specialOffers':
+    get:
+      summary: Provides a list of special offers
+      operationId: getSpecialOffers
+      description: |
+        Calling */specialOffers* retrieves a list of special offers (one way or short terms). One way offer presents an offer where boat can start or end it s charter in a different base that it s home base. 
+
+        Boat can start on a different base that it s home base if e.g. week before the requested period, boat ended in a different base that it s home base and then it s offered from that other base at particular period. 
+
+        If the boat has base A, and ends up a charter in base B, on the date when it finished in base B, it will be offered from that base. Short term presents an offer where duration of the charter will be less than 7 days. This means that boat can depart on e.g. Saturday and end charter on Wednesday. In the week (certain day) were a boat ended it s charter on Wednesday, it will be offered as an special offer ( short term) until the next availble check in day (default check in day if the boat).
+      parameters:
+        - $ref: '#/components/parameters/dateFrom'
+        - $ref: '#/components/parameters/flexibility'
+        - $ref: '#/components/parameters/companyIdArray'
+        - $ref: '#/components/parameters/countryArray'
+        - $ref: '#/components/parameters/product'
+        - $ref: '#/components/parameters/baseFromIdArray'
+        - $ref: '#/components/parameters/baseToIdArray'
+        - $ref: '#/components/parameters/yachtIdArray'
+        - $ref: '#/components/parameters/modelIdArray'
+        - $ref: '#/components/parameters/currency'
+        - $ref: '#/components/parameters/tripDurationArray'
+        - $ref: '#/components/parameters/minCabins'
+        - $ref: '#/components/parameters/maxCabins'
+        - $ref: '#/components/parameters/minBerths'
+        - $ref: '#/components/parameters/maxBerths'
+        - $ref: '#/components/parameters/minHeads'
+        - $ref: '#/components/parameters/maxHeads'
+        - $ref: '#/components/parameters/minLength'
+        - $ref: '#/components/parameters/maxLength'
+      responses:
+        '200':
+          description: returns a list of available yachts for requested special offer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Offer'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+        '422': 
+          $ref: '#/components/responses/422'
+      tags:
+        - Booking
+  '/specialOffers/{offerType}':
+    get:
+      summary: Provides a list of special offers
+      operationId: getSpecialOffersByType
+      description: Calling */specialOffers* retrieves a list of special offers (one way or short term offers)
+      parameters:
+        - in: path
+          name: offerType
+          description: offer type
+          required: true
+          schema:
+            type: string
+            enum:
+              - all
+              - oneway
+              - shortoffers
+        - $ref: '#/components/parameters/dateFrom'
+        - $ref: '#/components/parameters/flexibility'
+        - $ref: '#/components/parameters/companyIdArray'
+        - $ref: '#/components/parameters/countryArray'
+        - $ref: '#/components/parameters/product'
+        - $ref: '#/components/parameters/baseFromIdArray'
+        - $ref: '#/components/parameters/baseToIdArray'
+        - $ref: '#/components/parameters/sailingAreaIdArray'
+        - $ref: '#/components/parameters/yachtIdArray'
+        - $ref: '#/components/parameters/modelIdArray'
+        - $ref: '#/components/parameters/currency'
+        - $ref: '#/components/parameters/tripDurationArray'
+        - $ref: '#/components/parameters/minCabins'
+        - $ref: '#/components/parameters/maxCabins'
+        - $ref: '#/components/parameters/minBerths'
+        - $ref: '#/components/parameters/maxBerths'
+        - $ref: '#/components/parameters/minHeads'
+        - $ref: '#/components/parameters/maxHeads'
+        - $ref: '#/components/parameters/minLength'
+        - $ref: '#/components/parameters/maxLength'
+      responses:
+        '200':
+          description: returns a list of yachts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Offer'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+        '422': 
+          $ref: '#/components/responses/422'
+      tags:
+        - Booking
+  '/prices':
+    get:
+      summary: Provides a list of yacht prices
+      operationId: getPrices
+      description: Calling */prices* retrieves a list of yacht price on requested date interval
+      parameters:
+        - $ref: '#/components/parameters/dateFrom'
+        - $ref: '#/components/parameters/dateTo'
+        - $ref: '#/components/parameters/companyIdArray'
+        - $ref: '#/components/parameters/countryArray'
+        - $ref: '#/components/parameters/product'
+        - $ref: '#/components/parameters/yachtIdArray'
+        - $ref: '#/components/parameters/currency'
+        - $ref: '#/components/parameters/tripDurationArray'
+      responses:
+        '200':
+          description: Response will return final yacht price with discount for requested period. There are multiple filters that can be selected in the request to specify the request to get more precise response.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Price'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+        '422': 
+          $ref: '#/components/responses/422'
+      tags:
+        - Booking
+  '/reservation':
+    post:
+      summary: Create reservation
+      operationId: createReservation
+      description: Calling */reservation* is used to place a new option in the Booking Manager system. The system creates an option with standard discounts and obligatory applicable options. In this request, status is always 2 (option). 
+      requestBody:
+        description: json object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+      responses:
+        '201':
+          description: HTTPS status Created. Returns reservation details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+        '422': 
+          $ref: '#/components/responses/422'
+      tags:
+        - Booking
+  '/reservation/{reservationId}':
+    get:
+      summary: Get reservation
+      operationId: getReservation
+      description: Calling */reservation* is used to get specific reservation.
+      parameters:
+        - $ref: '#/components/parameters/reservationId'
+      responses:
+        '200':
+          description: returns a reservation details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponse'
+        '400':
+          description: bad input parameter
+        '401': 
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+      tags:
+        - Booking
+    put:
+      summary: Confirm reservation
+      operationId: confirmReservation
+      description: Calling */reservation* converts an option into finalized reservation
+      parameters:
+        - $ref: '#/components/parameters/reservationId'
+      responses:
+        '200':
+          description: returns a reservation details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponse'
+                
+        '400':
+          description: bad input parameter
+        '401': 
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+      tags:
+        - Booking
+    delete:
+      summary: Cancel reservation
+      operationId: cancelReservation
+      description: Calling */reservation* cancels a option. An already confirmed booking is not possible to cancel automatically.
+      parameters:
+        - $ref: '#/components/parameters/reservationId'
+      responses:
+        '200':
+          description: returns a reservation details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponse'
+                
+        '400':
+          description: bad input parameter
+        '401': 
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+      tags:
+        - Booking
+  '/reservations/{year}':
+    get:
+      summary: Retrieves all reservations, including cancelled reservations
+      operationId: getReservations
+      description: Calling */reservations* retrieves a list of all reservations
+      parameters:
+        - $ref: '#/components/parameters/year'
+        - in: query
+          name: status
+          description: Retrieves bookings with the entered status. If parameter is not entered, all reservations will be retrieved, including canceled ones.
+          required: false
+          schema:
+            $ref: '#/components/schemas/Long'
+      responses:
+        '200':
+          description: returns a list of all reservations with all dedicated detailed information.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReservationResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+      tags:
+        - Booking
+  '/availability/{year}':
+    get:
+      summary: Gets availability
+      operationId: getAvailability
+      description: Calling */availability/{id}* returns availability for specific year
+      parameters:
+        - $ref: '#/components/parameters/year'
+        - $ref: '#/components/parameters/company'
+      responses:
+        '200':
+          description: All reservations are returned including canceled reservations and current offers that don't block availability.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailabilityResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+      tags:
+        - Booking     
+  '/shortAvailability/{year}':
+    get:
+      summary: Gets shortAvailability
+      operationId: getShortAvailability
+      description: |+ 
+        Calling */shortAvailability/{id}* return availability for specific year. Different status format will retrieve results in different format. 
+        - 1 Binary - availability information for the resource in binary format. Each availabilityInfo is 365 characters long (or 366 in case of the leap year) and it represents the whole year (single character is one day of the year). First character is January 1st, second character is January 2nd, and so on. If character is equal to “0” it means that yacht is available on that day, otherwise character is equalto “1”.
+        - 2 Hex - availability information for the resource in hexadecimal format. Each availabilityInfo is 92 characters long and it represents the whole year. First character is January 1, January 2, January 3 and January 4, second character is January 5, January 6, January 7 and January 8, and so on. Last characters should be discarded depending on how long the requested year is. For example, if availabilityInfo is “fe03f0..” in binary it is “0000 0001 1111 1100 0000 1111..” and it means that yacht is available from January 1 until January 8, but it is not available from January 8 until January 15, and so on.
+        - 3 Status - Response is the same as the Binary response with one difference – booked days are not represented with character “1” for all types of reservations but instead reservation status id is used. For example, if availabilityInfo is “2222 2220 0000...” it means that boat is under status Option from January 1 until January 8, and it is free from January 8 etc.
+      parameters:
+        - $ref: '#/components/parameters/year'
+        - $ref: '#/components/parameters/company'
+        - in: query
+          name: yachtId
+          description: yacht id
+          required: false
+          schema:
+            $ref: '#/components/schemas/Long'
+        - in: query
+          name: format
+          description: >
+             `1` - binary `2` - hex `3` - status
+          required: false
+          schema:
+            type: integer
+            enum: [1,2,3]
+      responses:
+        '200':
+          description: |+
+            returns a short availability. There are several status codes
+            - **0** Available 
+            - **1** Reservation 
+            - **2** Option
+            - **3** Option in expiration
+            - **4** Service
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShortAvailability'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+      tags:
+        - Booking
+  '/addDocument/{itemType}':
+    post:
+      summary: Add document
+      operationId: addDocuent
+      description: Calling */addDocument* is used to place a document on specific item in Booking Manager system. You can add various document/s on  - yacht model, reservation, user from the addressbook or yacht. Yacht model and yacht id can be retrieved from /yachts reponse, reservation id from /reservations. Successfull document upload returns -
+       "UPLOADED"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                document:
+                  type: string
+                  format: binary
+      parameters: 
+        - in: path
+          name: itemType
+          description: ""
+          required: true
+          schema:
+           $ref: '#/components/schemas/ItemTypeEnum'
+        - in: query
+          name: id
+          description: "Entity id"
+          required: true
+          schema:
+           type: integer
+           format: int64
+           example: 1188200267800225
+        - in: query
+          name: description
+          description: "Document description"
+          required: true
+          schema:
+           type: string
+           example: "Document description"
+      responses:
+        '201':
+          description: HTTPS status Created. Returns reservation details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+        '422': 
+          $ref: '#/components/responses/422'
+      tags:
+        - Booking
+  '/invoices/{invoiceType}':
+    get:
+      summary: exports all issued invoices or only certain type issued in requested period
+      operationId: getInvoices
+      description: |+
+        All invoices issued by the company inside Booking Manager can be retrieved this call. Advance invoices for payments, final invoices, stornos as well as cash invoices in the base. 
+        Main purpose of invoice retrieval is to **automate the recording of invoices** into bookkeeping software. 
+        # Invoice Types
+        All invoices are treated the same within Booking Manager, however for better segmentation we provide a possibility to filter:
+        - **0** All invoices
+        - **1** Final invoices for bookings or direct  invoices for services
+        - **2** Advance invoices for payments received
+        - **3** Storno invoices, usuallyinvoices canceled  manually or payent(advance) invoices automatically canceled via finalinvoice
+        # Important notes
+        - Invoices can be retrieved as many times as necessary. Booking Manager keeps their historical record.
+        - Once exported, **to preserve the data integrity with bookkeeping software** the original invoices are locked and unchangeable in the Booking Manager application
+        - Having that in mind, it is important to export invoices only after they are finalised for the current taxation period
+        - Date parameters **fetch all invoices, including the dates being sent**. Time part of the date parameter is ignored, all invoices from those days will be exported.
+         
+      parameters:
+        - in: path
+          name: invoiceType
+          description: >
+             `0` - all `1` - final `2` - advance `3` - storno
+          required: true
+          schema:
+            type: integer
+            enum: [0,1,2,3]
+        - $ref: '#/components/parameters/dateFrom'
+        - $ref: '#/components/parameters/dateTo'
+      responses:
+        '200':
+          description: Every object is a single invoice
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Invoice'
+        '400':
+          $ref: '#/components/responses/400'
+        '401': 
+          $ref: '#/components/responses/401'
+        '422': 
+          $ref: '#/components/responses/422'
+      tags:
+        - Invoice
+
+# 2) Apply the security globally to all operations
+security:
+  - bearerAuth: [] 
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      
+  responses:
+    400:
+      description: Bad request.
+    401:
+      description: Authorization Bearer token is missing or invalid.
+    404:
+      description: Entity not found.
+    422:
+      description: Unprocessable obligatory field.
+      
+  parameters:
+    id:
+      in: path
+      name: id
+      description: entity id
+      required: true
+      schema:
+        $ref: '#/components/schemas/Long'
+    reservationId:
+      in: path
+      name: reservationId
+      description: reservation id
+      required: true
+      schema:
+       $ref: '#/components/schemas/Long'
+    flexibility:
+      in: query
+      name: flexibility
+      description: >
+         `1` - on day `2` - in week `3` - one week `4` - two weeks `5` - in month `6` - in year
+      required: false
+      schema:
+        $ref: "#/components/schemas/Flexibility"
+    product:
+      in: query
+      name: productName
+      description: product name
+      required: false
+      schema:
+        $ref: "#/components/schemas/ProductEnum"
+    year:
+      in: path
+      name: year
+      description: specific year
+      required: true
+      schema:
+        type: integer
+        example: 2019
+    dateFrom:
+      in: query
+      name: dateFrom
+      description: date format&#58; yyyy-MM-ddTHH:mm:ss
+      required: true
+      schema:
+         $ref: '#/components/schemas/DateTime'
+    dateTo:
+      in: query
+      name: dateTo
+      description: date format&#58; yyyy-MM-ddTHH:mm:ss
+      required: true
+      schema:
+        $ref: '#/components/schemas/DateTime'
+    companyIdArray:
+      in: query
+      name: companyId
+      description: company ids
+      required: false
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/Long'
+      style: form
+      explode: true
+      examples:
+        oneId:
+          summary: Example of a company id
+          value: [191]
+        multipleIds:
+          summary: Example of multiple company ids
+          value: [191, 724, 380]
+    countryArray:
+      in: query
+      name: country
+      description: countries
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+      style: form
+      explode: true
+      examples:
+        oneId:
+          summary: Example of a country id
+          value: ["HR"]
+        multipleIds:
+          summary: Example of multiple country ids
+          value: ["HR","IT"]
+    baseFromIdArray:
+      in: query
+      name: baseFromId
+      description: base from ids
+      required: false
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/Long'
+      style: form
+      explode: true
+      examples:
+        oneId:
+          summary: Example of a single base from id
+          value: [123]
+        multipleIds:
+          summary: Example of multiple base from ids
+          value: [123, 785, 859]
+    baseToIdArray:
+      in: query
+      name: baseToId
+      description: base to ids
+      required: false
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/Long'
+      style: form
+      explode: true
+      examples:
+        oneId:
+          summary: Example of a single base to id
+          value: [123]
+        multipleIds:
+          summary: Example of multiple base to ids
+          value: [123, 785, 859]
+    sailingAreaIdArray:
+      in: query
+      name: sailingAreaId
+      description: sailing area ids
+      required: false
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/Long'
+      style: form
+      explode: true
+      examples:
+        oneId:
+          summary: Example of a single sailing area id
+          value: [15]
+        multipleIds:
+          summary: Example of multiple sailing area ids
+          value: [4,15,22]
+    yachtIdArray:
+      in: query
+      name: yachtId
+      description: yacht ids
+      required: false
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/Long'
+      style: form
+      explode: true
+      examples:
+        oneId:
+          summary: Example of a single yacht id
+          value: [123]
+        multipleIds:
+          summary: Example of multiple yachts ids
+          value: [123, 785, 859]
+    modelIdArray:
+      in: query
+      name: modelId
+      description: model ids
+      required: false
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/Long'
+      style: form
+      explode: true
+      examples:
+        oneId:
+          summary: Example of a single model id
+          value: [123]
+        multipleIds:
+          summary: Example of multiple model ids
+          value: [123, 785, 859]   
+    currency:
+      in: query
+      name: currency
+      description: currency
+      required: false
+      schema:
+        type: string
+      example: "EUR"
+    tripDurationArray:
+      in: query
+      name: tripDuration
+      description: one or more trip durations
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+      style: form
+      explode: true
+      examples:
+        oneId:
+          summary: Example of a single trip duration
+          value: [5]
+        multipleIds:
+          summary: Example of multiple trip durations
+          value: [1, 5, 7]
+    company:
+      in: query
+      name: companyId
+      description: company id
+      required: false
+      schema:
+         $ref: '#/components/schemas/Long'
+    minCabins:
+      in: query
+      name: minCabins
+      description: minimum number of cabins
+      required: false
+      schema:
+        type: integer
+        example: 5
+    maxCabins:
+      in: query
+      name: maxCabins
+      description: maximum number of cabins
+      required: false
+      schema:
+        type: integer
+        example: 10
+    minBerths:
+      in: query
+      name: minBerths
+      description: minimum number of berths
+      required: false
+      schema:
+        type: integer
+        example: 5
+    maxBerths:
+      in: query
+      name: maxBerths
+      description: maximum number of berths
+      required: false
+      schema:
+        type: integer
+        example: 10
+    minHeads:
+      in: query
+      name: minHeads
+      description: minimum number of heads
+      required: false
+      schema:
+        type: integer
+        example: 5
+    maxHeads:
+      in: query
+      name: maxHeads
+      description: maximum number of heads
+      required: false
+      schema:
+        type: integer
+        example: 10
+    minLength:
+      in: query
+      name: minLength
+      description: minimum length
+      required: false
+      schema:
+        $ref: '#/components/schemas/Float'
+    maxLength:
+      in: query
+      name: maxLength
+      description: maximum length
+      required: false
+      schema:
+        $ref: '#/components/schemas/Float'
+
+  schemas:
+    Long:
+      type: integer
+      format: int64
+      example: 123456789
+    Double:
+      type: number
+      format: double
+      example: 6000.0
+    Float:
+      type: number
+      format: float
+      example: 12.51
+    DateTime:
+      type: string
+      format: date-time
+      example: "2019-01-01T00:00:00"
+    Datetime:
+      allOf:
+        - $ref: '#/components/schemas/DateTime'
+      example: "2019-01-01 00:00:00" 
+      
+    ProductEnum: 
+      type: string
+      enum: ["bareboat","crewed","cabin","flotilla","power","berth","regatta"]
+    Flexibility:
+      type: integer
+      enum: [1,2,3,4,5,6]
+    ItemTypeEnum: 
+      type: string
+      enum: ["model", "reservation","user","yacht"]
+  
+    
+    Country:
+      type: object
+      required: [id, name, short, long, worldRegion]
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 380
+        name:
+          type: string
+          example: Italy
+        short:
+          type: string
+          example: IT
+        long:
+          type: string
+          example: ITA
+        worldRegion:
+          type: integer
+          format: int64
+          example: 16
+      description: Describes a single country in Booking Manager. It is a standard country entry with standard ISO elements for *name*, *shortCode*, *longCode* and numerical country *id*. *worldRegion* field links to an MMK defined world region available via */worldRegions* call 
+    WorldRegion:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 22
+        name:
+          type: string
+          example: Caribbean
+      description: Describes a single world region in Booking Manager. Fields are *id* and *name*.
+    SailingArea:
+      type: object
+      required: [id,name]
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 54
+        name:
+          type: string
+          example: Rio De Janeiro
+      description: Describes a single sailing area in Booking Manager. Fields are *id* and *name*.
+    Base:
+      type: object
+      required: [id,name,city,country,address,latitude,longitude,countryId,sailingAreas]
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 249
+        name:
+          type: string
+          example: "Sapri"
+        city:
+          type: string
+          example: "Sapri"
+        country:
+          type: string
+          example: "Italy"
+        address:
+          type: string
+          example: ""
+        latitude:
+          type: string
+          example: "40.06521"
+        longitude:
+          type: string
+          example: "15.627836"
+        countryId:
+           type: integer
+           format: int64
+           example: 380
+        sailingAreas:
+          type: array
+          items:
+            $ref: '#/components/schemas/Long'
+          example: [18]
+    Equipment:
+      type: object
+      required: [id,name]
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 9
+        name:
+          type: string
+          example: "Bow thruster"
+    DocumentResponse:
+      type: object
+      required: [id,name,description,status]
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1188200267800225
+        name:
+          type: string
+          example: "Document name"
+        description:
+          type: string
+          example: "Document description"
+        status:
+          type: string
+          example: "UPLOADED"
+    Company:
+      type: object
+      required: [id,name,city,zip,country,telephone,mobile,vatCode,email,web,bankAccountNumber,termsAndConditions]
+      properties:
+        id:
+          $ref: '#/components/schemas/Long'
+        name:
+          type: string
+          example: "DemoMMK"
+        address:
+          type: string
+          example: "Radnička cesta 52"
+        city:
+          type: string
+          example: "Zagreb"
+        zip:
+          type: string
+          example: "123-45"
+        country:
+          type: string
+          example: "Croatia"
+        telephone:
+          type: string
+          example: "+3851 3773 951"
+        telephone2:
+          type: string
+          example: "+3851 1234 567"
+        mobile:
+          type: string
+          example: "+385 98/1234-567"
+        vatCode:
+          type: string
+          example: "HR123456789"
+        email:
+          type: string
+          example: "support@mmksystems.com"
+        web:
+          type: string
+          example: "www.booking-manager.com"
+        bankAccountNumber:
+          type: string
+          example: "HR123456789"
+        termsAndConditions:
+          type: string
+          example: "Terms and conditions"
+    Yacht:
+      type: object
+      required: [id,name,model,modelId,kind,homeBaseId,homebase,companyId,comapny]
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 8860335000797
+          description: unique resource id
+        name:
+          type: string
+          example: "Bilko"
+          description: the name of the individual yacht
+        model:
+          type: string
+          example: "Sun Odyssey 509"
+          description: the name of the individual yacht
+        modelId:
+          type: integer
+          format: int64
+          example: 428155400797
+          description: the name of the model
+        shipyardId:
+          type: integer
+          format: int64
+          example: 5
+          description: id of the shipyard (boat manufacturer)
+        year:
+          type: integer
+          example: 2020
+          description: the build year of the boat
+        kind:
+          type: string
+          example: Gulet
+          description: The kind of a vessel. Kind can be -  Sail boat , Motor boat, Catamaran, Power Catamaran, Gulet, Motorsailer, Motoryacht, Trimaran, Other
+        homeBaseId: 
+          type: integer
+          format: int64
+          example: 429492270000100000
+          description: the unique id of the home base
+        homeBase:
+          type: string
+          example: ACI Marina Split
+          description: Home base name
+        companyId: 
+          type: integer
+          format: int64
+          example: 797
+          description: ID of the charter company
+        company:
+          type: string
+          example: "DemoMMK"
+          description: Charter company name
+        draught:
+          type: number
+          format: float
+          example: 2.0
+          description: draught (m)
+        beam:
+          type: number
+          format: float
+          example: 3.82
+          description: beam (m)
+        length:
+          type: number
+          format: float
+          example: 12.8
+          description: length at waterline (m)
+        waterCapacity:
+          type: number
+          format: float
+          example: 200.0
+          description: capacity of the water tank (l)
+        fuelCapacity:
+          type: number
+          format: float
+          example: 170.0
+          description: capacity of the fuel tank (l)
+        engine:
+          type: string
+          example: "750 hp"
+        deposit:
+          type: number
+          format: float
+          example: 2000.0 
+        commissionPercentage:
+          type: number
+          format: float
+          example: 17.0
+        wc:
+          type: integer
+          example: 2
+        berths:
+          type: integer
+          example: 12
+        cabins:
+          type: integer
+          example: 8
+        mainsailArea:
+          type: number
+          format: float
+          example: 75.34
+        genoaArea:
+          type: number
+          format: float
+          example: 28.0
+        mainsailType:
+          type: string
+          example: "Furling"
+          description: types - Full Batten or Furling
+        genoaType:
+          type: string
+          example: "Self Tacking Jib"
+          description : types - Furling or Self Tacking Jib
+        defaultCheckInDay:
+          type: integer
+          example: 1
+          description: -1 Any, 1 Sunday, 2 Monday, 3 Tuesday, 4 Wednesday, 5 Thursday, 6 Friday, 7 Saturday
+        images:
+          type: array
+          items:
+             $ref: '#/components/schemas/Image'
+          description: Each boat has minimum of 3 pictures - Main, Interior and Plan Image. Additionally, each boat can have more pictures than 3 minimum ones, and if available, they will be visible along will all other pictures.
+        equipmentIds:
+          type: array
+          items:
+             type: integer
+             format: int64
+             example: 16
+        products:
+          type: array
+          items: 
+           $ref: '#/components/schemas/Product'
+          description: Boat can have one or multiple products assigned on it. It means that it can be offered at the same time as one or more products ( e.g. Bareboat and Crewed). Values can be Bareboat, Crewed, Cabin, Flotilla, Regatta and Allinclusive.
+         
+        cabinsLayout:
+          type: array
+          items:
+            $ref: '#/components/schemas/Layout'
+        berthsLayout:
+          type: array
+          items:
+            $ref: '#/components/schemas/Layout'
+    Shipyard:
+      type: object
+      required: [id,name,shortName]
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 268
+        name:
+          type: string
+          example: "Aquarius Shipyard Private Limited"
+        shortName:
+          type: string
+          example: "Aquarius Shipyard"
+    Image:
+      type: object
+      required: [description,url,sortOrder]
+      properties:
+        description:
+          type: string
+          example: "Interior image"
+        url:
+          type: string
+          example: "http://www.booking-manager.com/image123"
+        sortOrder:
+          type: integer
+          example: 1
+    Product:
+      type: object
+      required: [name, extras]
+      properties:
+        name:
+          type: string
+          example: "Bareboat"
+        extras:
+          type: array
+          items:
+            $ref: '#/components/schemas/Extras'
+    Extras:
+      type: object
+      required: [name,obligatory,price,unit,payableInBase,includesDepositWaiver,validDaysFrom,validDaysTo]
+      properties:
+        name:
+          type: string
+          example: "Fuel"
+        obligatory:
+          type: boolean
+          example: true
+        price:
+          type: number
+          format: float
+          example: 500.0
+        unit:
+          type: string
+          example: "per booking"
+        payableInBase:
+          type: boolean
+          example: true
+        includedDepositWaiver:
+          type: boolean
+          example: false
+        validDaysFrom:
+          type: integer
+          format: int64
+          example: 0
+        validDaysTo:
+          type: integer
+          format: int64
+          example: 365
+        minNumberOfPersons:
+          type: integer
+          format: int64
+          example: 2
+          description: only if > 0
+        maxNumberOfPersons:
+          type: integer
+          format: int64
+          example: 8
+          description: only if > 0
+        validForBases:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidForBases'
+    ValidForBases:
+      type: object
+      required: [from,to]
+      properties:
+        from:
+          type: array
+          items:
+            type: integer
+            format: int64
+            example: 5
+        to:
+          type: array
+          items:
+            type: integer
+            format: int64
+            example: 27
+    Layout: 
+      type: object
+      required: [name,amount]
+      properties:
+        name:
+          type: string
+          example: "1"
+        amount:
+          type: integer
+          example: 8
+    Offer:
+      type: object
+      required: [yachtId,yacht,startBaseId,endBaseId,startBase,endBase,dateFrom,dateTo,product,price,currency,startPrice,discountPercentage]
+      properties:
+        yachtId:
+          $ref: '#/components/schemas/Long'
+        yacht:
+          type: string
+          example: "Aurora"
+        startBaseId:
+          $ref: '#/components/schemas/Long'
+        endBaseId:
+          $ref: '#/components/schemas/Long'
+        startBase:
+          type: string
+          example: "Dubrovnik"
+        endBase:
+          type: string
+          example: "Dubrovnik"
+        dateFrom:
+          $ref: '#/components/schemas/Datetime'
+        dateTo:
+          $ref: '#/components/schemas/Datetime'
+        product:
+          type: string
+          example: "Cabin"
+        price:
+          type: number
+          format: double
+          example: 5400
+        currency:
+          type: string
+          example: "EUR"
+        startPrice:
+          $ref: '#/components/schemas/Double'
+        discountPercentage:
+          type: number
+          format: float
+          example: 10.00
+    Price:
+      type: object
+      properties:
+        yachtId:
+          $ref: '#/components/schemas/Long'
+        dateFrom:
+          $ref: '#/components/schemas/Datetime'
+        dateTo:
+          $ref: '#/components/schemas/Datetime'
+        product:
+          type: string
+          example: "Cabin"
+        price:
+          $ref: '#/components/schemas/Double'
+        currency:
+          type: string
+          example: "EUR"
+        startPrice:
+          $ref: '#/components/schemas/Double'
+        discountPercentage:
+          $ref: '#/components/schemas/Float'
+    Reservation:
+      type: object
+      required: [dateFrom,dateTo,yachtId]
+      properties:
+        dateFrom:
+          $ref: '#/components/schemas/DateTime'
+        dateTo:
+          $ref: '#/components/schemas/DateTime'
+        yachtId:
+          type: integer
+          format: int64
+          example: 978989630000100225
+        status:
+          type: integer
+          format: int64
+          example: 2
+        productName:
+          type: string
+          example: "Bareboat"
+        baseFromId:
+          type: integer
+          format: int64
+          example: 667400400000100000
+        baseToId:
+          type: integer
+          format: int64
+          example: 667400400000100000
+        clientName:
+          type: string
+          example: "John D."
+        cliendId:
+          $ref: '#/components/schemas/Long'
+        currency:
+          type: string
+          example: "EUR"
+    ReservationResponse:
+      type: object
+      required: [id,dateFrom,dateTo,yachtId,status,productName,baseFromId,baseToId,currency,clientName]
+      properties:
+        id:
+          $ref: '#/components/schemas/Long'
+        dateFrom:
+          type: string
+          format: date-time
+          example: "2019-02-14T00:00:00"
+        dateTo:
+          type: string
+          format: date-time
+          example: "2019-02-21T00:00:00"
+        expirationDate:
+          type: string
+          format: date-time
+          example: "2019-02-12T00:00:00"
+        yachtId:
+          type: integer
+          format: int64
+          example: 978989630000100225
+        status:
+          $ref: '#/components/schemas/Long'
+        productName:
+          type: string
+          example: "Bareboat"
+        baseFromId:
+          type: integer
+          format: int64
+          example: 667400400000100000
+        baseToId:
+          type: integer
+          format: int64
+          example: 667400400000100000'
+        currency:
+          type: string
+          example: "EUR"
+        clientName:
+          type: string
+          example: "John D."
+    AvailabilityResponse:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Long'
+        dateFrom:
+          $ref: '#/components/schemas/Datetime'
+        dateTo:
+          $ref: '#/components/schemas/Datetime'
+        yachtId:
+          $ref: '#/components/schemas/Long'
+        status:
+          $ref: '#/components/schemas/Long'
+        baseFromId:
+          $ref: '#/components/schemas/Long'
+        baseToId:
+          $ref: '#/components/schemas/Long'
+        optionExpirationDate:
+          $ref: '#/components/schemas/Datetime'    
+    ShortAvailability:
+      type: object
+      required: [y,bs]
+      properties:
+        y:
+          $ref: '#/components/schemas/Long'
+        bs:
+          type: string
+          example: "000101101010011111011111011"
+    Invoice:
+      type: object
+      properties:
+        type:
+          type: integer
+          example: 1
+        invoiceCode:
+          type: string
+          example: "N/00009/2019"
+        reservationNumber:
+          type: string
+          example: "19-90415"
+        invoiceDate:
+          $ref: '#/components/schemas/Datetime'
+        client:
+          type: string
+          example: "client name"
+        clientCode: 
+          type: string
+          example: "12345"
+        clientVatCode:
+          type: string
+          example: "12345"
+        clientId: 
+          $ref: '#/components/schemas/Long'
+        guestName:
+          type: string
+          example: "guest name"
+        currency:
+          type: string
+          example: "EUR"
+        exchangeRate:
+          type: number
+          format: double
+          example: 1
+        altCurrency:
+          type: string
+          example: "HRK"
+        altExchangeRate:
+          type: number
+          format: double
+          example: 7.414
+        resource:
+          type: string
+          example: "resource name"
+        resourceType:
+          type: string
+          example: "resource type"
+        resourceCode:
+          $ref: '#/components/schemas/Long'
+        totalPrice:
+          type: number
+          format: double
+          example: 2500
+        totalPriceWithoutTax:
+          type: number
+          format: double
+          example: 2000
+        rate:
+          type: number
+          format: double
+          example: 25
+        totalAltPrice:
+          type: number
+          format: double
+          example: 18535
+        totalAltPriceWithoutTax:
+          type: number
+          format: double
+          example: 14828.32
+        baseFrom:
+          type: string
+          example: "base from"
+        baseTo:
+          type: string
+          example: "base to"
+        alreadyTransferred:
+          type: boolean
+          example: true
+        serviceDateFrom:
+          $ref: '#/components/schemas/Datetime'
+        serviceDateTo:
+          $ref: '#/components/schemas/Datetime'
+        paymentMethodName:
+          type: string
+          example: "payment method name"
+        paymentMethodType:
+          type: string
+          example: "payment method type"
+        agencyId:
+           $ref: '#/components/schemas/Long'
+        agencyName:
+          type: string
+          example: "agency name"
+        agencyCode:
+          type: string
+          example: "12345"
+        agencyVatCode:
+          type: string
+          example: "12345"
+        relatedReservationId:
+          $ref: '#/components/schemas/Long'
+        reservationId:
+          $ref: '#/components/schemas/Long'
+        relatedInvoiceNumber:
+          type: string
+          example: "N/00009/2019"
+        vat:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vat'
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/Services'
+        bi:
+          type: array
+          items:
+            $ref: '#/components/schemas/Bi'
+    Vat:
+      type: object
+      properties:
+        base:
+          type: number
+          format: double
+          example: 2.000
+        rate:
+          type: number
+          format: double
+          example: 25
+        total:
+          type: number
+          format: double
+          example: 2500  
+        baseAlt:
+          type: number
+          format: double
+          example: 14828.18  
+        totalAlt:
+          type: number
+          format: double
+          example: 18535.03 
+    Services:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "new discount"
+        total:
+          type: number
+          format: double
+          example: 72.76
+        id:
+          $ref: '#/components/schemas/Long'  
+        rate:
+          type: number
+          format: double
+          example: 25  
+        code:
+          type: string
+          example: ""
+    Bi:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "profit"
+        value:
+          type: number
+          format: double
+          example: 2500.65

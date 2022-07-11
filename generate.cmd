@@ -1,0 +1,11 @@
+docker run --rm -v %cd%:/local openapitools/openapi-generator-cli generate ^
+    -i /local/OpenAPI.yml ^
+    -g php-symfony ^
+    -o /local ^
+    --git-host=github.com ^
+    --git-user-id=kerrygun ^
+    --git-repo-id=booking-manager-client ^
+    --additional-properties=apiPackage=booking-manager-client ^
+    --additional-properties=artifactVersion=2.0.2 ^
+    --additional-properties=bundleName=booking-manager-client ^
+    --additional-properties=packageName=BookingManagerClient ^
